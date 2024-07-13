@@ -8,20 +8,34 @@
 \usepackage{makecell}
 \renewcommand\theadfont{\bfseries\sffamily}
 
+% para meter subtítulos grado 4
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+% para que las figuras no aparezcan siempre en el top de la página
+\usepackage{float}
+
 \title{Práctica del Tema 5: Publicación y difusión}
 \author{Blanca María Pérez Soriano}
 
 \begin{document}
 \maketitle
-\begin{abstract}
-    \begin{center}
-        Creación y publicación de un modelo 3D a partir de un modelo digitalizado representado como una nube de puntos
-    \end{center}   
-\end{abstract}
 
 \pagebreak
 
-\section{Preparación}
+\tableofcontents
+
+\pagebreak
+
+\section{Introducción}
+Creación y publicación de un modelo 3D a partir de un modelo digitalizado representado como una nube de puntos
+
+
+\section{Metodología empleada}
 \subsection{Software}
 %TODO: meter meshlab en un link a su página principal
 Para realizar esta práctica utilizaremos el programa MeshLab en la versión 64bit v2023.12.
@@ -34,7 +48,7 @@ Para importar el modelo de nube de puntos seleccionado seguiremos las siguientes
     \includegraphics[scale=0.35]{images/presentacion_importacion.png}    
 \end{center}
 
-Es una maya de 246.025 vértices y no tiene caras.
+Es una malla de 246.025 vértices y no tiene caras.
 \pagebreak
 
 \section{Resolución de la práctica}
@@ -50,8 +64,9 @@ Ahora podemos ver el claro cambio de color y trazado en la pieza:
 \begin{center}
     \includegraphics[scale=0.35]{images/triangulación_02.png}    
 \end{center}
-\subsection{Reconstrucción de la superficie mediante Screened Poisson}
+\subsection{Triangulación}
 
+\subsubsection{Reconstrucción de la superficie mediante Screened Poisson}
 Para ello hacemos click en: \textbf{\textit{``Filters → Remeshing, Simplification and Reconstruction → Surface Reconstruction: Screened Poisson''}}. Se nos desplegará la siguiente ventana:
 
 \begin{center}
@@ -68,27 +83,31 @@ Como hemos visto en el curso, un buen valor de \textbf{Reconstruction Depth} par
 
 \pagebreak
 
-\begin{itemize}
-    \item Sin pre-clean:
-    
-    \includegraphics[scale=0.40]{images/triangulación_04.png}    
-    
-    \begin{itemize}
-        \item \textbf{vértices:} 135.855
-        \item \textbf{caras:} 271.706
-     \end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.40]{images/triangulación_04.png}
+    \caption{Reconstrucción sin pre-clean}
+\end{figure}
 
-    \item Con pre-clean: 
-    
-    \includegraphics[scale=0.40]{images/triangulación_05.png}
-    
-    \begin{itemize}
-        \item \textbf{vértices:} 135.855
-        \item \textbf{caras:} 271.706
-    \end{itemize}
+\begin{itemize}
+    \item \textbf{vértices:} 135.855
+    \item \textbf{caras:} 271.706
 \end{itemize}
 
-La maya original tenía 246.025 puntos, de manera que hemos reducido casi en la mitad la calidad del modelo. Podemos observar, si nos acercamos a la pieza, este tipo de pérdidas:
+\begin{figure}[H]
+    \centering       
+    \includegraphics[scale=0.40]{images/triangulación_05.png}
+    \caption{Reconstrucción con pre-clean}
+\end{figure}
+
+\pagebreak
+
+\begin{itemize}
+    \item \textbf{vértices:} 135.855
+    \item \textbf{caras:} 271.706
+\end{itemize}
+
+La malla original tenía 246.025 puntos, de manera que hemos reducido casi en la mitad la calidad del modelo. Podemos observar, si nos acercamos a la pieza, este tipo de pérdidas:
 \begin{center}
     \begin{tabular}{|l|}
         \hline
@@ -136,11 +155,100 @@ Finalmente queda eliminar algún triángulo artificial. Para ello hacemos click 
     \includegraphics[scale=0.65]{images/triangulación_11.png}    
 \end{center}
 
-Tras darle a \textit{``Apply''} veo que sólo 6 caras son seleccionadas:
+Tras darle a \textit{``Apply''} veo que sólo 6 caras son seleccionadas, por lo que no tocaremos nada más de momento:
 
 \begin{center}
     \includegraphics[scale=0.65]{images/triangulación_12.png}    
 \end{center}
+\subsubsection{Corrección topológica de la malla}
+
+Habiendo guardado una copia de la malla triangulada generada y habiendo eliminado la malla de nube de puntos, duplico la malla triangulada dentro del programa para prevenirnos del efecto de malas acciones, y empezamos con las técnicas.
+
+\paragraph{Autointersecciones}
+Para detectar \textbf{autointersecciones} hacemos clicks en los siguientes apartados: \textbf{\textit{Filters → Selection → Select self intersecting faces}}. Tras este proceso, veo que no se han seleccionado caras por lo que no aplico ninguna eliminación:
+
+\begin{center}
+    \includegraphics[scale=0.6]{images/triangulación_13.png}    
+\end{center}
+
+\pagebreak
+
+\paragraph{Elementos no-variedad}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.65]{images/triangulación_14.png}
+    \caption{Aristas no-variedad}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.65]{images/triangulación_15.png}    
+    \caption{Vértices no-variedad}
+\end{figure}
+
+No sale nada para ninguno de los dos, así que parece todo perfecto por ahora.
+
+\paragraph{T-Vértices}
+
+Para limpiar los vértices que conectan con el punto interior de una arista haremos click en \textbf{\textit{Filters → Cleaning \& Repairing → Remove T-Vertices}}, nos saldrá un panel y deberemos hacer click en \textit{``Apply''}. Para este caso sí nos han salido unas poquitas ocurrencias:
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.6]{images/triangulación_16.png}
+    \caption{Panel de T-Vértices}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=1]{images/triangulación_17.png} 
+    \caption{Log}
+\end{figure}
+
+\paragraph{Filtrados varios}
+
+En este apartado dejaré fotos de algunos fitrados más que se han hecho antes del tapado de fisuras:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.75]{images/triangulación_18.png}
+    \caption{Panel de T-Vértices}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.75]{images/triangulación_19.png}
+    \caption{Panel de T-Vértices}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.75]{images/triangulación_20.png}
+    \caption{Panel de T-Vértices}
+\end{figure}
+
+\paragraph{Tapado de fisuras}
+
+Una vez tenemos la malla limpia, procedemos a tapar posibles agujeros. Para ello vamos a \textbf{\textit{Filters → Remeshing, Simplification and Reconstruction → Close Holes}}. Se nos desplegará el siguiente panel:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.75]{images/triangulación_21.png}
+    \caption{Panel de T-Vértices}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.75]{images/triangulación_22.png}
+    \caption{Panel de T-Vértices}
+\end{figure}
+
+Parece que no se ha tapado ningún hueco. Tras esto, estuve probando distintos valores de aristas a tapar, oscilando entre 20 y 70, pero no obtuve otro mensaje en el log, así que parece una malla bastante sólida.
+
+Si se hubieran generado nuevas caras y vértices, habría que repetir todo este proceso de nuevo \textit{(comprobar autointersecciones, eliminar elementos no-variedad, eliminar t-vértices, etc)}, para asegurar que la malla queda limpia.
+
+\subsection{Simplificación}
 
 \subsection{Utilización de GitHub}
 
