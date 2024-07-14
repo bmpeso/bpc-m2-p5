@@ -19,6 +19,14 @@
 % para que las figuras no aparezcan siempre en el top de la página
 \usepackage{float}
 
+% para que el toc tenga los links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=black,  %choose some color if you want links to stand out
+}
+
 \title{Práctica del Tema 5: Publicación y difusión}
 \author{Blanca María Pérez Soriano}
 
@@ -34,15 +42,17 @@
 \section{Introducción}
 Creación y publicación de un modelo 3D a partir de un modelo digitalizado representado como una nube de puntos
 
+% TODO: meter todas las imágenes en figuras
+% TODO: ajustar las tablas e imágenes a las sangrías
+% TODO: revisar los caption de las imágenes
 
 \section{Metodología empleada}
 \subsection{Software}
-%TODO: meter meshlab en un link a su página principal
-Para realizar esta práctica utilizaremos el programa MeshLab en la versión 64bit v2023.12.
+Para realizar esta práctica utilizaremos el programa \href{https://www.meshlab.net/}{MeshLab} en la versión 64bit v2023.12.
 \subsection{Modelo de puntos}
 Para la realización de esta práctica se utilizará el modelo de nube puntos proporcionado en el recurso \textit{``Modelos para la práctica"}: \textbf{MayanSculpture.ply}.
 \subsection{Importación a MeshLab}
-%TODO: sustituir y poner el nombre modelo que se va a utilizar
+
 Para importar el modelo de nube de puntos seleccionado seguiremos las siguientes acciones: \textbf{File → Import Mesh → MayanSculpture.ply}
 \begin{center}
     \includegraphics[scale=0.35]{images/presentacion_importacion.png}    
@@ -64,7 +74,9 @@ Ahora podemos ver el claro cambio de color y trazado en la pieza:
 \begin{center}
     \includegraphics[scale=0.35]{images/triangulación_02.png}    
 \end{center}
+
 \subsection{Triangulación}
+% TODO: breve explicación de lo que es triangular y para qué sirve
 
 \subsubsection{Reconstrucción de la superficie mediante Screened Poisson}
 Para ello hacemos click en: \textbf{\textit{``Filters → Remeshing, Simplification and Reconstruction → Surface Reconstruction: Screened Poisson''}}. Se nos desplegará la siguiente ventana:
@@ -250,7 +262,126 @@ Si se hubieran generado nuevas caras y vértices, habría que repetir todo este 
 
 \subsection{Simplificación}
 
-\subsection{Utilización de GitHub}
+Para agilizar la publicación de nuestro modelo en los medios, es posible que necesitemos reducir su tamaño intentando mantener su aspecto visual, esto puede conseguirse reduciendo el número de vértices y triángulos del modelo.
+
+\subsubsection{Simplificación: Quadratic Edge Collapse Decimation}
+
+Vamos a elegir este algoritmo por ser el que más respeta los detalles, dentro de lo que hemos visto en el curso. Para ello hacemos click en las siguientes secciones: \textbf{\textit{Filters → Remeshing, Simplification and Reconstruction → Simplification: Quadratic Edge Collapse Decimation}}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.75]{images/simplificacion_01.png}
+    \caption{Panel de Simplificación: Quadratic Edge Collapse Decimation}
+\end{figure}
+
+Como es requisito de esta práctica entregar el modelo simplificado al menos un 10\%, actualmente tenemos 1.073.632 caras, por lo que establecemos el valor de \textit{``Target Number of Faces''} en 107.363 caras. Tras la simplificación, el modelo tiene 53.683 vértices y 107.362 caras, lo que cumple con la reducción de al menos un 10\%.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.55]{images/simplificacion_02.png}
+    \caption{Modelo reducido al 10\%}
+\end{figure}
+
+\subsubsection{Corrección topológica de la nueva malla}
+
+Como tenemos un nuevo modelo, es necesario rehacer una comprobación topológica de los elementos. Como   
+
+\paragraph{Comprobación de Autointersecciones}
+
+Nos aparecen 4 caras, las identifico:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.35]{images/simplificacion_03.png}
+    \caption{Autointersecciones}
+\end{figure}
+
+Las elimino aprovechando la selección y cierro las fisuras generadas, estableciendo \textit{``Max size to be closed''} a 20. Las deselecciono y \textbf{vuelvo a lanzar el comprobador de autointersecciones}, resultando esta vez en \textbf{0}. Sigo con el resto de filtros de selección, pero no seleccionan nada:
+
+\begin{itemize}
+    \item Non Mainfold Edges
+    \item Non Mainfold Vertices
+\end{itemize}
+~\\
+Respecto al limpiado y reparación del modelo:
+
+\begin{itemize}
+    \item Remove T-Vertices
+    \item Remove duplicate faces
+    \item Remove duplicate vertices
+    \item Remove isolated pieces (wrt Face Num.)
+\end{itemize}
+
+Durante estas acciones no se han eliminado vértices ni caras, de manera que tenemos el nuevo modelo simplificado topológicamente preparado.
+Adjunto el detalle de la malla tras la simplificación:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/simplificacion_04.png}
+    \caption{Sin simplificación}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/simplificacion_05.png}
+    \caption{Simplificada}
+\end{figure}
+
+\subsection{Parametrización}
+
+Para realizar el \textit{``desenrollado''} de la malla y asginarle las coordenadas de textura de la pieza original, vamos a utilizar el algoritmo \textbf{Voronoy Atlas}. Para ello hacemos click en las siguientes secciones: \textbf{\textit{Filters → Texture → Parametrization: Voronoy Atlas}}. Se nos desplegará el siguiente panel, en el que haremos click en \textit{``Apply''}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/parametrizacion_01.png}
+    \caption{Panel Voronoy Atlas}
+\end{figure}
+
+Tras la ejecución, este es el resultado:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/parametrizacion_01.png}
+    \caption{Panel Voronoy Atlas}
+\end{figure}
+
+\subsection{Texturización del modelo simplificado}
+
+Dejo, para la comparación, la malla \textit{VoroAtlas} generada:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/textura_01.png}
+    \caption{Voronoy Atlas antes de texturizar}
+\end{figure}
+
+Para transferir las texturas de la malla original al nuevo modelo simplificado utilizaremos la función, primero importo la malla de nube de puntos (la original), y luego utilizo la función: \textbf{\textit{Filters → Texture → Transfer: Vertex attributes to texture (1 or 2 meshes)}}. Se despliega el siguiente panel:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/textura_02.png}
+    \caption{Panel de texturización}
+\end{figure}
+
+Este sería el resultado tras hacer click en \textit{``Apply''} y poner el color de las caras en blanco:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/textura_03.png}
+    \caption{Modelo texturizado}
+\end{figure}
+
+Muestro el resultado de la textura en \texttt{.png}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.45]{images/PoissonMeshMayanSculpture_topo_sin_fisuras_tex.png}
+    \caption{Modelo texturizado}
+\end{figure}
+
+\subsection{Publicación del modelo}
+
+\subsubsection{Utilización de GitHub}
 
 \textbf{GitHub} es una plataforma de colaboración en proyectos de software, apoyada en \textbf{Git}, lo cual nos permite llevar, además, un \textit{control de versiones} de los documentos que vayamos publicando en el repositorio. 
 
