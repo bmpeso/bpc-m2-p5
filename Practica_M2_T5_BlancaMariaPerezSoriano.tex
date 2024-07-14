@@ -25,6 +25,7 @@
     colorlinks=true, %set true if you want colored links
     linktoc=all,     %set to all if you want both sections and subsections linked
     linkcolor=black,  %choose some color if you want links to stand out
+    urlcolor=cyan,
 }
 
 \title{Práctica del Tema 5: Publicación y difusión}
@@ -42,9 +43,6 @@
 \section{Introducción}
 Creación y publicación de un modelo 3D a partir de un modelo digitalizado representado como una nube de puntos
 
-% TODO: meter todas las imágenes en figuras
-% TODO: ajustar las tablas e imágenes a las sangrías
-% TODO: revisar los caption de las imágenes
 
 \section{Metodología empleada}
 \subsection{Software}
@@ -54,11 +52,12 @@ Para la realización de esta práctica se utilizará el modelo de nube puntos pr
 \subsection{Importación a MeshLab}
 
 Para importar el modelo de nube de puntos seleccionado seguiremos las siguientes acciones: \textbf{File → Import Mesh → MayanSculpture.ply}
-\begin{center}
-    \includegraphics[scale=0.35]{images/presentacion_importacion.png}    
-\end{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/presentacion_importacion.png}
+    \caption{Malla de 246.025 vértices, 0 caras}
+\end{figure}
 
-Es una malla de 246.025 vértices y no tiene caras.
 \pagebreak
 
 \section{Resolución de la práctica}
@@ -66,24 +65,34 @@ Es una malla de 246.025 vértices y no tiene caras.
 
 Para empezar correctamente, lo primero que haremos será intentar mejorar el \textit{shading} de la pieza. Para ello calcularemos las normales, esto hará que los puntos de luz sean tomados perpendicularmente. Deberemos hacer click en la siguiente secuencia: \textbf{Filters → Point Set → compute normals for point sets}. Tras esto, se nos desplegará la siguiente ventana, deberemos hacer click en \textit{``Apply''}:
 
-\begin{center}
-    \includegraphics[scale=0.65]{images/triangulación_01.png}    
-\end{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.60]{images/triangulación_01.png}
+    \caption{Panel: Compute normals for point sets}
+\end{figure}
+
+\pagebreak
 
 Ahora podemos ver el claro cambio de color y trazado en la pieza:
-\begin{center}
-    \includegraphics[scale=0.35]{images/triangulación_02.png}    
-\end{center}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/triangulación_02.png}
+    \caption{Modelo con normales halladas}
+\end{figure}
+
+\pagebreak
 
 \subsection{Triangulación}
-% TODO: breve explicación de lo que es triangular y para qué sirve
 
 \subsubsection{Reconstrucción de la superficie mediante Screened Poisson}
 Para ello hacemos click en: \textbf{\textit{``Filters → Remeshing, Simplification and Reconstruction → Surface Reconstruction: Screened Poisson''}}. Se nos desplegará la siguiente ventana:
 
-\begin{center}
-    \includegraphics[scale=0.65]{images/triangulación_03.png}    
-\end{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.55]{images/triangulación_03.png}
+    \caption{Panel: Surface Reconstruction}
+\end{figure}
 
 De esta ventana, los dos valores interesantes son:
 \begin{itemize}
@@ -91,13 +100,13 @@ De esta ventana, los dos valores interesantes son:
     \item \textbf{Pre-Clean}: Este \textit{checkbox} haría un prelimpiado de normales con valores nulos, en caso de ser marcado.
 \end{itemize}
 
-Como hemos visto en el curso, un buen valor de \textbf{Reconstruction Depth} para lanzar una primera reconstrucción sería el \textbf{8}. De manera que lanzamos la reconstrucción sin tocar nada más y vemos si tenemos que reajustar. El resultado fue el siguiente:
-
 \pagebreak
+
+Como hemos visto en el curso, un buen valor de \textbf{Reconstruction Depth} para lanzar una primera reconstrucción sería el \textbf{8}. De manera que lanzamos la reconstrucción sin tocar nada más y vemos si tenemos que reajustar:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.40]{images/triangulación_04.png}
+    \includegraphics[scale=0.35]{images/triangulación_04.png}
     \caption{Reconstrucción sin pre-clean}
 \end{figure}
 
@@ -106,13 +115,12 @@ Como hemos visto en el curso, un buen valor de \textbf{Reconstruction Depth} par
     \item \textbf{caras:} 271.706
 \end{itemize}
 
+
 \begin{figure}[H]
     \centering       
-    \includegraphics[scale=0.40]{images/triangulación_05.png}
+    \includegraphics[scale=0.34]{images/triangulación_05.png}
     \caption{Reconstrucción con pre-clean}
 \end{figure}
-
-\pagebreak
 
 \begin{itemize}
     \item \textbf{vértices:} 135.855
@@ -120,82 +128,86 @@ Como hemos visto en el curso, un buen valor de \textbf{Reconstruction Depth} par
 \end{itemize}
 
 La malla original tenía 246.025 puntos, de manera que hemos reducido casi en la mitad la calidad del modelo. Podemos observar, si nos acercamos a la pieza, este tipo de pérdidas:
-\begin{center}
-    \begin{tabular}{|l|}
-        \hline
-        \thead{Por puntos} \\
-        \hline
-        \includegraphics[scale=0.40]{images/triangulación_06.png} \\
-        \hline
-        \thead{Poisson Mesh} \\
-        \hline
-        \includegraphics[scale=0.40]{images/triangulación_07.png} \\
-        \hline
-    \end{tabular}
-\end{center}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.34]{images/triangulación_06.png} \\
+    \caption{Por puntos}
+\end{figure}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.34]{images/triangulación_07.png} \\
+    \caption{Poisson Mesh}
+\end{figure}
 
 \pagebreak
 
 Repetimos el proceso aumentando el nivel de profundidad en 1. El resultado es el siguiente:
-\begin{center}
-    \begin{tabular}{|l|}
-        \hline
-        \thead{Por puntos} \\
-        \hline
-        \includegraphics[scale=0.40]{images/triangulación_08.png} \\
-        \hline
-        \thead{Poisson Mesh} \\
-        \hline
-        \includegraphics[scale=0.40]{images/triangulación_09.png} \\
-        \hline
-    \end{tabular}
-\end{center}
-
-Esta vez se han generado 546.859 vértices. A partir de aquí podríamos cambiar el color de la pieza, pero la verdad es que me gusta cómo está quedando. 
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.34]{images/triangulación_08.png} \\
+    \caption{Por puntos}
+\end{figure}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.34]{images/triangulación_09.png} \\
+    \caption{Poisson Mesh}
+\end{figure}
 
 \pagebreak
+Esta vez se han generado 546.859 vértices. A partir de aquí podríamos cambiar el color de la pieza, pero la verdad es que me gusta cómo está quedando. 
 
 Si hubiera querido cambiarlo, me habría movido entre estas dos pestañas del panel derecho, siendo la primera señalada la de los vértices y la segunda señalada la de las caras:
 
-\begin{center}
-    \includegraphics[scale=0.65]{images/triangulación_10.png}    
-\end{center}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.55]{images/triangulación_10.png} \\
+    \caption{Pestañas modificación de color}
+\end{figure}
 
+\pagebreak
 Finalmente queda eliminar algún triángulo artificial. Para ello hacemos click en \textbf{\textit{Filters → Selection → Select faces with edges larger than...}}, y el valor promedio para esta pieza es de 0.795821:
 
-\begin{center}
-    \includegraphics[scale=0.65]{images/triangulación_11.png}    
-\end{center}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.55]{images/triangulación_11.png} \\
+    \caption{Panel: Eliminación de aristas largas}
+\end{figure}
+
 
 Tras darle a \textit{``Apply''} veo que sólo 6 caras son seleccionadas, por lo que no tocaremos nada más de momento:
 
-\begin{center}
-    \includegraphics[scale=0.65]{images/triangulación_12.png}    
-\end{center}
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.55]{images/triangulación_12.png} \\
+    \caption{Poisson Mesh}
+\end{figure}
+
 \subsubsection{Corrección topológica de la malla}
 
 Habiendo guardado una copia de la malla triangulada generada y habiendo eliminado la malla de nube de puntos, duplico la malla triangulada dentro del programa para prevenirnos del efecto de malas acciones, y empezamos con las técnicas.
 
+\pagebreak 
+
 \paragraph{Autointersecciones}
 Para detectar \textbf{autointersecciones} hacemos clicks en los siguientes apartados: \textbf{\textit{Filters → Selection → Select self intersecting faces}}. Tras este proceso, veo que no se han seleccionado caras por lo que no aplico ninguna eliminación:
 
-\begin{center}
-    \includegraphics[scale=0.6]{images/triangulación_13.png}    
-\end{center}
-
-\pagebreak
+\begin{figure}[H]
+    \centering 
+    \includegraphics[scale=0.55]{images/triangulación_13.png} \\
+    \caption{Panel: Autointersecciones}
+\end{figure}
 
 \paragraph{Elementos no-variedad}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.65]{images/triangulación_14.png}
+    \includegraphics[scale=0.55]{images/triangulación_14.png}
     \caption{Aristas no-variedad}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.65]{images/triangulación_15.png}    
+    \includegraphics[scale=0.55]{images/triangulación_15.png}    
     \caption{Vértices no-variedad}
 \end{figure}
 
@@ -203,12 +215,12 @@ No sale nada para ninguno de los dos, así que parece todo perfecto por ahora.
 
 \paragraph{T-Vértices}
 
-Para limpiar los vértices que conectan con el punto interior de una arista haremos click en \textbf{\textit{Filters → Cleaning \& Repairing → Remove T-Vertices}}, nos saldrá un panel y deberemos hacer click en \textit{``Apply''}. Para este caso sí nos han salido unas poquitas ocurrencias:
+Para limpiar los vértices que conectan con el punto interior de una arista haremos click en \textbf{\textit{Filters → Cleaning \& Repairing → Remove T-Vertices}}, nos saldrá un panel y deberemos hacer click en \textit{``Apply''}. Para este caso sí nos han salido algunas ocurrencias:
 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.6]{images/triangulación_16.png}
+    \includegraphics[scale=0.65]{images/triangulación_16.png}
     \caption{Panel de T-Vértices}
 \end{figure}
 
@@ -226,18 +238,18 @@ En este apartado dejaré fotos de algunos fitrados más que se han hecho antes d
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.75]{images/triangulación_18.png}
-    \caption{Panel de T-Vértices}
+    \caption{Remove duplicated faces}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.75]{images/triangulación_19.png}
-    \caption{Panel de T-Vértices}
+    \caption{Remove duplicated Vertices}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.75]{images/triangulación_20.png}
-    \caption{Panel de T-Vértices}
+    \caption{Remove isolated pieces}
 \end{figure}
 
 \paragraph{Tapado de fisuras}
@@ -246,7 +258,7 @@ Una vez tenemos la malla limpia, procedemos a tapar posibles agujeros. Para ello
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.75]{images/triangulación_21.png}
+    \includegraphics[scale=0.65]{images/triangulación_21.png}
     \caption{Panel de T-Vértices}
 \end{figure}
 
@@ -260,6 +272,8 @@ Parece que no se ha tapado ningún hueco. Tras esto, estuve probando distintos v
 
 Si se hubieran generado nuevas caras y vértices, habría que repetir todo este proceso de nuevo \textit{(comprobar autointersecciones, eliminar elementos no-variedad, eliminar t-vértices, etc)}, para asegurar que la malla queda limpia.
 
+\pagebreak
+
 \subsection{Simplificación}
 
 Para agilizar la publicación de nuestro modelo en los medios, es posible que necesitemos reducir su tamaño intentando mantener su aspecto visual, esto puede conseguirse reduciendo el número de vértices y triángulos del modelo.
@@ -270,9 +284,10 @@ Vamos a elegir este algoritmo por ser el que más respeta los detalles, dentro d
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.75]{images/simplificacion_01.png}
+    \includegraphics[scale=0.65]{images/simplificacion_01.png}
     \caption{Panel de Simplificación: Quadratic Edge Collapse Decimation}
 \end{figure}
+
 
 Como es requisito de esta práctica entregar el modelo simplificado al menos un 10\%, actualmente tenemos 1.073.632 caras, por lo que establecemos el valor de \textit{``Target Number of Faces''} en 107.363 caras. Tras la simplificación, el modelo tiene 53.683 vértices y 107.362 caras, lo que cumple con la reducción de al menos un 10\%.
 
@@ -292,7 +307,7 @@ Nos aparecen 4 caras, las identifico:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.35]{images/simplificacion_03.png}
+    \includegraphics[scale=0.34]{images/simplificacion_03.png}
     \caption{Autointersecciones}
 \end{figure}
 
@@ -302,7 +317,9 @@ Las elimino aprovechando la selección y cierro las fisuras generadas, estableci
     \item Non Mainfold Edges
     \item Non Mainfold Vertices
 \end{itemize}
-~\\
+
+\pagebreak
+
 Respecto al limpiado y reparación del modelo:
 
 \begin{itemize}
@@ -333,15 +350,16 @@ Para realizar el \textit{``desenrollado''} de la malla y asginarle las coordenad
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.34]{images/parametrizacion_01.png}
+    \includegraphics[scale=0.65]{images/parametrizacion_01.png}
     \caption{Panel Voronoy Atlas}
 \end{figure}
 
+\pagebreak
 Tras la ejecución, este es el resultado:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.34]{images/parametrizacion_01.png}
+    \includegraphics[scale=0.5]{images/parametrizacion_01.png}
     \caption{Panel Voronoy Atlas}
 \end{figure}
 
@@ -359,7 +377,7 @@ Para transferir las texturas de la malla original al nuevo modelo simplificado u
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.34]{images/textura_02.png}
+    \includegraphics[scale=0.65]{images/textura_02.png}
     \caption{Panel de texturización}
 \end{figure}
 
@@ -376,27 +394,79 @@ Muestro el resultado de la textura en \texttt{.png}:
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.45]{images/PoissonMeshMayanSculpture_topo_sin_fisuras_tex.png}
-    \caption{Modelo texturizado}
+    \caption{Textura}
 \end{figure}
+
+\pagebreak
 
 \subsection{Publicación del modelo}
 
-\subsubsection{Utilización de GitHub}
+\subsubsection{Exportar modelo a formato X3D}
 
-\textbf{GitHub} es una plataforma de colaboración en proyectos de software, apoyada en \textbf{Git}, lo cual nos permite llevar, además, un \textit{control de versiones} de los documentos que vayamos publicando en el repositorio. 
+Para publicar el modelo vamos a necesitar exportar el fichero al formato \texttt{.x3d}, para ello hacemos click en \textbf{\textit{Files → Export Mesh As..}}:
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.45]{images/PoissonMeshMayanSculpture_topo_sin_fisuras_tex.png}
+    \caption{Panel para exportar a \texttt{.x3d}}
+\end{figure}
 
-Para crear un repositorio y hacer seguimiento de este proyecto haremos click, dentro de nuestro panel principal, en \textbf{\textit{"New"}}:
+\textbf{Importarte}: seleccionar la casilla de exportar las coordenadas de las texturas.
 
-\begin{center}
-    \includegraphics[scale=0.35]{images/github_01.png}
-\end{center}
+\pagebreak
+
+\subsubsection{Subir nuestro modelo a GitHub}
+
+Para publicar nuestro modelo utilizaremos la herramienta de colaboración \textbf{GitHub}. Para crear un repositorio y hacer seguimiento de este proyecto haremos click, dentro de nuestro panel principal, en \textbf{\textit{"New"}}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/github_01.png}
+    \caption{Creación del repositorio 1}
+\end{figure}
 
 A continuación rellenaremos los campos que creamos convenientes \textit{(señalo en recuadros los campos modificados)} y haremos click en \textbf{\textit{Create repository}}:
 
-\begin{center}
-    \includegraphics[scale=0.45]{images/github_02.png}
-\end{center}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/github_02.png}
+    \caption{Creación del repositorio 2}
+\end{figure}
 
+\pagebreak
+
+\subsubsection{Publicar nuestro modelo desde GitHub}
+
+Para publicar nuestro modelo en GitHub, además de subir los archivos al repositorio y el \textit{index.html}, deberemos configurarlo para que muestre nuestra página web \textit{(https://usuario.github.com)}. Para ello iremos a la configuración del repositorio y rellenaremos la siguiente pantalla:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/publicacion_02.png}
+    \caption{Repositorio → Settings → Pages}
+\end{figure}
+
+Tras esto, podremos navegar a nuestra página:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.34]{images/publicacion_03.png}
+    \caption{Modelo publicado}
+\end{figure}
+\pagebreak
+\section{Valoración personal}
+
+Hice esta práctica conforme iba viendo los vídeos. Al terminar la práctica he aprendido a valorar varias cosas:
+\begin{itemize}
+    \item Cada división de la práctica: esto me ayudará a identificar la situación/el momento en la que me vaya a encontrar cuando obtenga una malla de primeras y quiera publicarla. Ahora tengo una idea general del proceso de publicación de un modelo.
+    \item Concepto de \textit{"simplificación"}: Era algo en lo que no había caído y me ha resultado útil aprender a reducir un modelo a un tamaño que yo pueda elegir, manteniendo mejor o peor los detalles en base a necesidades
+    \item Aprender a utilizar GitHub: era consciente de que podían tenerse páginas web, pero no sabía cómo configurarlo
+\end{itemize}
+
+Además, me ha gustado también utilizar una herramienta \textit{open source} como \textit{MeshLab}. De manera que por todo esto y en general diría que el proceso me ha gustado mucho. Dejo los links del repositorio y de la web:
+
+\begin{itemize}
+    \item Repositorio: \href{https://github.com/bmpeso/bpc-m2-p5}{bmpeso/bpc-m2-p5}
+    \item Página del modelo: \href{https://bmpeso.github.io/bpc-m2-p5/}{https://bmpeso.github.io/bpc-m2-p5}
+\end{itemize}
 
 \end{document}
